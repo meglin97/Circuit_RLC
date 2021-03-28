@@ -21,7 +21,8 @@ def loadFile():
 def plotData(x, y):
     plt.plot(x, y)
     plt.xlabel("temps en s")
-    plt.ylabel("courant i(t)")
+    plt.ylabel("u(t)")
     plt.show()
     
-plotData()
+x,y=loadFile()
+plotData(x,y)
