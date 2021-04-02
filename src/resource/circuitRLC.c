@@ -3,48 +3,72 @@
 #include <math.h>
 
 #define N 20
+#define E 5
 
-
-void discSup_0(float lambda,float discriminant,float **u,float E){
+float *discSup_0(float lambda,float discriminant,float temps[N]){
     float r1=((-2*lambda) + sqrt(discriminant))/2;
     float r2=((-2*lambda) - sqrt(discriminant))/2;
+    static float u[N];
     for(int i=0;i<N;i++){
-       u[i][1]=(r2*E*exp(r1*u[i][0]) - r1*E*exp(r2*u[i][0]))/(r2-r1);
+       u[i]=(r2*E*exp(r1*temps[i]) - r1*E*exp(r2*temps[i]))/(r2-r1);
     }
+    return u;
 }
 
-void discEgal_0(float lambda,float **u,float E){
+float *discEgal_0(float lambda,float temps[N]){
+    static float u[N];
     float r=(-lambda);
     for(int i=0;i<N;i++){
-       u[i][1]=E*(lambda*u[i][0] + 1)*exp(r*u[i][0]);
+       u[i]=E*(lambda*temps[i] + 1)*exp(r*temps[i]);
     }
+    return u;
 }
 
-void discInf_0(float lambda,float discriminant,float **u,float E){
-
+//w²=-(discriminant)
+float *discInf_0(float lambda,float w,float temps[N]){
+    static float u[N];
+    for(int i=0;i<N;i++){
+        u[i] = E*(cos(w*temps[i]) + sin(w*temps[i]))*exp(-lambda*temps[i]);
+    }
+    return u;
 }
 
-float **equationCourant(float R,float L,float C,int t,float E){
+void equationCourant(float R,float L,float C,int t){
     float w0_carre=1/L*R;
     float lambda=R/(2*L);
 
     //equation du second degree homogene : r² + 2*lambda*r +w0² = 0
     //discriminant = (2*lambda)² - 4*w0²
     float discriminant=4*lambda-4*w0_carre;
-    float **u=malloc(sizeof(float*)*2);
-    
+    float *u;
+    float temps[N];
+    for(int i=0;i<N;i++){
+        temps[i]=i*(t/N);
+    }
     //lambda > w0²
     if(discriminant > 0){
-        discSup_0(lambda,discriminant,u,E);
-
+       u= discSup_0(lambda,discriminant,temps);
     }
-    return u;
+    else if(discriminant < 0){
+        float w=sqrt(-discriminant);
+        u=discInf_0(lambda,w,temps);
+    }
+    else{
+        u=discEgal_0(lambda,temps);
+    }
+    
+    FILE *file=fopen("results.txt","w");
+    for(int i=0;i<N;i++){
+        fprintf(file,"%f    %f\n",temps[i],u[i]);
+    }
+
 }
 
+
 int main(){
-    printf("***********************************************************\n");
-    printf("    Projet Méthode Numérique : Modélisation Circuit RLC    \n");
-    printf("***********************************************************\n");
+    printf("***************************************************\n");
+    printf("Projet Méthode Numérique : Modélisation Circuit RLC\n");
+    printf("***************************************************\n");
     float r,l,c;
     printf("Entrer la valeurs de R: ");
     scanf("%f",&r);
@@ -52,6 +76,6 @@ int main(){
     scanf("%f",&l);
     printf("Entrer la valeurs de C: ");
     scanf("%f",&c);
-    printf("R=%.2f, L=%.2f, C=%.2f\n",r,l,c);
+    equationCourant(r,l,c,20);
     return 0;
 }
