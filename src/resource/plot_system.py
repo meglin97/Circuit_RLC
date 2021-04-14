@@ -4,16 +4,11 @@ from matplotlib import pyplot as plt
 import numpy as np
 # Load data from txt file
 
-x, y = [], []
-with open('results.txt', 'r') as file:
-    lines=file.readlines()
-    for line in lines:
-        values = [float(s) for s in line.split()]
-        x.append(values[0])
-        y.append(values[1])
+data = np.loadtxt('results_euler.txt')
 # Plot data
 
-plt.plot(x, y)
+plt.plot(data[:,0],data[:,1])
+plt.title('Modélisation d\'un circuit RLC avec la méthode d\'Euler\n avec E= 1V, R=0.1Ω, L=1H, C=1F')
 plt.xlabel("temps en s")
 plt.ylabel("u(t)")
-plt.show()
+plt.savefig('euler.png')
