@@ -4,12 +4,20 @@ from matplotlib import pyplot as plt
 import numpy as np
 # Load data from txt file
 
-data = np.loadtxt('results_euler.txt')
+euler = np.loadtxt('results_euler.txt')
+rk4 = np.loadtxt('results_RK4.txt')
 # Plot data
 
-plt.plot(data[:,0],data[:,1])
-plt.title('Modélisation d\'un circuit RLC avec la méthode d\'Euler\n avec E= 1V, R=0.1Ω, L=1H, C=1F')
+plt.plot(euler[:,0],euler[:,1])
+plt.plot(rk4[:,0],rk4[:,1])
+plt.legend(["euler method","RK4 method"])
+plt.title('Modélisation d\'un circuit RLC (E= 1V, R=0.1Ω, L=1H, C=1F)')
 plt.xlabel("temps en s")
 plt.ylabel("u(t)")
 plt.grid()
-plt.savefig('euler.png')
+plt.savefig('results.png')
+
+
+# Plot data
+
+
