@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#define N 1000 
+#define N 10000 
 // Systeme d'EDO
 void F(double S[2],double U[2],double E,double R,double L,double C){
     S[0]=U[1];
@@ -14,7 +14,7 @@ void euler(double S[2],double U[2][N], double t[N], double t_i, double t_f,doubl
     double U_t[2];          // Vecteur contenant u et du/dt pour un temps t
     FILE* file1 =fopen("results_euler.txt","w");
     for(int i =1;i<N;i++){
-        t[i] = i * (t_f - t_i)/N + t_i;
+        t[i] = i * (t_f - t_i)/(N-1) + t_i;
         dt= t[i] - t[i-1]; 
         U_t[0] = U[0][i-1];
         U_t[1] = U[1][i-1];
@@ -28,7 +28,7 @@ void euler(double S[2],double U[2][N], double t[N], double t_i, double t_f,doubl
 
 //Méthode de Heun
 void heun(double S[2],double U[2][N], double t[N], double t_i, double t_f,double E,double R,double L,double C){
-    double k1, k2;
+    double k1[2], k2[2];
     double dt;
     double U_t[2]; 
     FILE* file2 =fopen("results_heun.txt","w");
@@ -39,16 +39,18 @@ void heun(double S[2],double U[2][N], double t[N], double t_i, double t_f,double
             U_t[0] = U[0][i-1];
             U_t[1] = U[1][i-1];
             F(S,U_t,E,R,L,C);
-            k1 = dt * S[1];
+            k1[0] = dt * S[0];
+            k1[1] = dt * S[1];
 
             //k2
-            U_t[0] = t[i];
-            U_t[1] = U[1][i-1] + k1/2;
+            U_t[0] = U[0][i-1] + k1[0]/2 ;
+            U_t[1] = U[1][i-1] + k1[1]/2;
             F(S,U_t,E,R,L,C);
-            k2 = dt * S[1];
+            k2[0] = dt * S[0];
+            k2[1] = dt * S[1]; 
 
-            U[0][i] = U[0][i-1] + dt *S[0];
-            U[1][i] = U[1][i-1] + (k1 + k2)/2;
+            U[0][i] = U[0][i-1] + (k1[0] + k2[0])/2;
+            U[1][i] = U[1][i-1] + (k1[1] + k2[1])/2;
             fprintf(file2, "%.6E     %.6E\n",t[i],U[0][i]);
         }
         
@@ -58,39 +60,44 @@ void heun(double S[2],double U[2][N], double t[N], double t_i, double t_f,double
 
 //Méthode de Runge-Kutta 4
 void rk4(double S[2],double U[2][N], double t[N], double t_i, double t_f,double E,double R,double L,double C){
-    double k1, k2, k3, k4, x;
+    double k1[2], k2[2], k3[2], k4[2]; //k dimention 2
     double dt;
     double U_t[2];          // Vecteur contenant u et du/dt pour un temps t
     FILE* file2 =fopen("results_RK4.txt","w");
         for(int i =1;i<N;i++){
             t[i] = i * (t_f - t_i)/N + t_i;
             dt= t[i] - t[i-1]; 
-            x = (t[i] + t[i-1])/2;
+
             //k1
             U_t[0] = U[0][i-1];
             U_t[1] = U[1][i-1];
             F(S,U_t,E,R,L,C);
-            k1 = dt * S[1];
+            k1[0] = dt * S[0];
+            k1[1] = dt * S[1];
 
             //k2
-            U_t[0] = t[i] + x;
-            U_t[1] = U[1][i-1] + k1/2;
+            U_t[0] = U[0][i-1] + k1[0]/2 ;
+            U_t[1] = U[1][i-1] + k1[1]/2;
             F(S,U_t,E,R,L,C);
-            k2 = dt * S[1];
+            k2[0] = dt * S[0];
+            k2[1] = dt * S[1];
 
             //k3
-            U_t[1] = U[1][i-1] + k2/2;
+            U_t[0] = U[0][i-1] + k2[0]/2 ;
+            U_t[1] = U[1][i-1] + k2[1]/2;
             F(S,U_t,E,R,L,C);
-            k3 = dt * S[1];
+            k3[0] = dt * S[0];
+            k3[1] = dt * S[1];
 
             //k4
-            U_t[0] = t[i];
-            U_t[1] = U[1][i-1] + k3;
+            U_t[0] = U[0][i-1] + k3[0] ;
+            U_t[1] = U[1][i-1] + k3[1];
             F(S,U_t,E,R,L,C);
-            k4 =dt * S[1];
+            k4[0] = dt * S[0];
+            k4[1] = dt * S[1];
 
-            U[0][i] = U[0][i-1] + dt *S[0];
-            U[1][i] = U[1][i-1] + (k1 + 2*k2 + 2*k3 + k4)/6;
+            U[0][i] = U[0][i-1] + (k1[0] + 2*k2[0] + 2*k3[0] + k4[0])/6;
+            U[1][i] = U[1][i-1] + (k1[1] + 2*k2[1] + 2*k3[1] + k4[1])/6;
             fprintf(file2, "%.6E     %.6E\n",t[i],U[0][i]);
         }
         

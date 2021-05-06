@@ -20,6 +20,6 @@ plt.grid()
 plt.savefig('results.png')
 
 
-# Plot data
+
 
 
