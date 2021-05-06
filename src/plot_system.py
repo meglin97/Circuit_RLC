@@ -7,8 +7,8 @@ import numpy as np
 euler = np.loadtxt('results_euler.txt')
 rk4 = np.loadtxt('results_RK4.txt')
 heun = np.loadtxt('results_heun.txt')
-# Plot data
 
+# Plot data
 plt.plot(euler[:,0],euler[:,1])
 plt.plot(rk4[:,0],rk4[:,1])
 plt.plot(heun[:,0],heun[:,1])
@@ -19,7 +19,7 @@ plt.ylabel("u(t)")
 plt.grid()
 plt.savefig('results.png')
 
-
+print("********** INFO : results.png crée **********")
 
 
 
