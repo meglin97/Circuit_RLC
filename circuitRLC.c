@@ -3,7 +3,7 @@
 #include <math.h>
 
 // Nombre de pas
-#define N 250000 
+#define N 10000 
 
 // Systeme d'EDO
 void F(double S[2],double U[2],double E,double R,double L,double C){
@@ -17,7 +17,7 @@ void euler(double S[2],double U[2][N], double t[N], double t_i, double t_f,doubl
     double dt;
     double U_t[2];          // Vecteur contenant u et du/dt pour un temps t
 
-    FILE* file1 =fopen("results_euler.txt","w");
+    FILE* file1 =fopen("data_euler.txt","w");
     for(int i =1;i<N;i++){
         t[i] = i * (t_f - t_i)/(N-1) + t_i;
         dt= t[i] - t[i-1]; 
@@ -26,6 +26,8 @@ void euler(double S[2],double U[2][N], double t[N], double t_i, double t_f,doubl
         F(S,U_t,E,R,L,C);
         U[0][i] = U[0][i-1] + dt *S[0];
         U[1][i] = U[1][i-1] + dt *S[1];
+        
+        // Ecriture dans la fichier 
         fprintf(file1, "%.6E     %.6E\n",t[i],U[0][i]);
     }
     fclose(file1);
@@ -38,7 +40,7 @@ void heun(double S[2],double U[2][N], double t[N], double t_i, double t_f,double
     double dt;
     double U_t[2];          // Vecteur contenant u et du/dt pour un temps t
 
-    FILE* file2 =fopen("results_heun.txt","w");
+    FILE* file2 =fopen("data_heun.txt","w");
     for(int i =1;i<N;i++){
         t[i] = i * (t_f - t_i)/N + t_i;
         dt= t[i] - t[i-1]; 
@@ -57,9 +59,11 @@ void heun(double S[2],double U[2][N], double t[N], double t_i, double t_f,double
         k2[0] = dt * S[0];
         k2[1] = dt * S[1]; 
 
-            // Calcul de u(t)
+        // Calcul de u(t)
         U[0][i] = U[0][i-1] + (k1[0] + k2[0])/2;
         U[1][i] = U[1][i-1] + (k1[1] + k2[1])/2;
+        
+        // Ecriture dans la fichier
         fprintf(file2, "%.6E     %.6E\n",t[i],U[0][i]);
     }
     fclose(file2);
@@ -72,7 +76,7 @@ void rk4(double S[2],double U[2][N], double t[N], double t_i, double t_f,double 
     double dt;                          
     double U_t[2];                      // Vecteur contenant u et du/dt pour un temps t
 
-    FILE* file2 =fopen("results_RK4.txt","w");
+    FILE* file2 =fopen("data_RK4.txt","w");
     for(int i =1;i<N;i++){
         t[i] = i * (t_f - t_i)/N + t_i;
         dt= t[i] - t[i-1]; 
@@ -108,6 +112,8 @@ void rk4(double S[2],double U[2][N], double t[N], double t_i, double t_f,double 
         // Calcul de u(t)
         U[0][i] = U[0][i-1] + (k1[0] + 2*k2[0] + 2*k3[0] + k4[0])/6;
         U[1][i] = U[1][i-1] + (k1[1] + 2*k2[1] + 2*k3[1] + k4[1])/6;
+        
+        // Ecriture dans la fichier
         fprintf(file2, "%.6E     %.6E\n",t[i],U[0][i]);
     }
     fclose(file2);
@@ -132,7 +138,7 @@ int main(){
     U[1][0] = dudt;
     t[0] = t_i;
 
-    // Appels des différentes fonctions
+    // Appels des différentes fonctions : creation des fichiers de données
     euler(S,U,t,t_i,t_f,E,R,L,C);
     rk4(S,U,t,t_i,t_f,E,R,L,C);
     heun(S,U,t,t_i,t_f,E,R,L,C);
