@@ -15,4 +15,4 @@ results.png
 ```
 
 # Nettoyer
-make clean
+```make clean```
