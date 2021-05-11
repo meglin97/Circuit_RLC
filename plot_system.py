@@ -2,11 +2,11 @@
 
 from matplotlib import pyplot as plt
 import numpy as np
-# Load data from txt file
 
-euler = np.loadtxt('results_euler.txt')
-rk4 = np.loadtxt('results_RK4.txt')
-heun = np.loadtxt('results_heun.txt')
+# Load data from txt file
+euler = np.loadtxt('data_euler.txt')
+rk4 = np.loadtxt('data_RK4.txt')
+heun = np.loadtxt('data_heun.txt')
 
 # Plot data
 plt.figure(figsize=(20,15))
@@ -20,9 +20,9 @@ plt.xlabel("temps en s")
 plt.ylabel("u(t)")
 plt.xlim([-1,101])
 plt.grid()
-plt.savefig('results.png')
+plt.savefig('data.png')
 
-print("********** INFO : results.png crée **********")
+print("\n********** INFO : results.png crée **********")
 
 
 
