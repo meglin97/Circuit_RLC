@@ -6,6 +6,7 @@ Pour changer le nombre de pas N et les valeurs de R, L et C, allez dans le fichi
 
 # Compilation
 ```make``` 
+
 quatre fichiers se créent dans le dossier courant:
 ```
 results_euler.txt
